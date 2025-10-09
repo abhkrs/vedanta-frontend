@@ -21,7 +21,7 @@ export default function Heading({black, green, className, delay: customDelay}) {
       animate={shouldAnimate ? { y: 0, opacity: 1 } : { y: 50, opacity: 0 }}
       transition={{ duration: 0.6, delay: shouldAnimate ? delay : 0, ease: 'easeOut' }}
     >
-      {black} <strong className="text-prime">{green}</strong>
+      <strong className="text-black"> {black} <span className="text-prime">{green}</span></strong>
     </motion.h2>
   )
 }
