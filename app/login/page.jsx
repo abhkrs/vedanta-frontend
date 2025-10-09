@@ -4,206 +4,219 @@ import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
-import { login } from '../../utils/apihelper';
 import { login as loginApi } from '@/utils/apihelper';
 import Image from 'next/image';
+import PreloaderLink from '@/components/PreloaderLink';
 
 export default function Page() {
-  const [activeTab, setActiveTab] = useState('email');
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({ email: '', mobile: '', password: '' });
-  const router = useRouter();
+    const [activeTab, setActiveTab] = useState('employee');
+    const [showPassword, setShowPassword] = useState(false);
+    const [identifier, setIdentifier] = useState('');
+    const [password, setPassword] = useState('');
+    const [otp, setOtp] = useState('');
+    const [errors, setErrors] = useState({ identifier: '', password: '', otp: '' });
 
-  const validate = () => {
-    let valid = true;
-    let newErrors = { email: '', mobile: '', password: '' };
-    if (activeTab === 'email') {
-      if (!email) {
-        newErrors.email = 'Email is required';
-        valid = false;
-      } else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-        newErrors.email = 'Enter a valid email';
-        valid = false;
-      }
-    } else {
-      if (!mobile) {
-        newErrors.mobile = 'Mobile number is required';
-        valid = false;
-      } else if (!/^\d{10}$/.test(mobile.replace(/\D/g, ''))) {
-        newErrors.mobile = 'Enter a valid 10-digit mobile number';
-        valid = false;
-      }
-    }
-    if (!password) {
-      newErrors.password = 'Password is required';
-      valid = false;
-    }
-    setErrors(newErrors);
-    return valid;
-  };
+    const isEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(identifier);
+    const isMobile = /^\d{10}$/.test(identifier.replace(/\D/g, ''));
+    const router = useRouter();
 
-  const handleLogin = async () => {
-    if (!validate()) return;
-    let data = { password };
-    if (activeTab === 'email') {
-      data.identifier = email;
-    } else {
-      data.identifier = mobile;
-    }
-    const result = await loginApi(data);
+    const validate = () => {
+        let valid = true;
+        let newErrors = { identifier: '', password: '', otp: '' };
 
-    if (result.success) {
-      toast.success('Login successful!');
-      if (result.data.token) {
-        localStorage.setItem('token', result.data.token);
-      }
-      setTimeout(() => {
-        router.push('/register');
-      }, 1000);
-    } else {
-      toast.error(result.message || 'Login failed');
-    }
-  };
+        if (!identifier) {
+            newErrors.identifier = 'Email or mobile number is required';
+            valid = false;
+        } else if (!isEmail && !isMobile) {
+            newErrors.identifier = 'Enter a valid email or 10-digit mobile number';
+            valid = false;
+        }
 
-  // Clear error on type
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-    if (errors.email) setErrors({ ...errors, email: '' });
-  };
-  const handleMobileChange = (e) => {
-    setMobile(e.target.value);
-    if (errors.mobile) setErrors({ ...errors, mobile: '' });
-  };
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    if (errors.password) setErrors({ ...errors, password: '' });
-  };
+        if (isEmail && !password) {
+            newErrors.password = 'Password is required';
+            valid = false;
+        }
 
-  return (
-    <section className="bg-[url('/bg.webp')] bg-cover bg-center pt-8">
-      <div className="flex container relative z-10">
+        if (isMobile && !otp) {
+            newErrors.otp = 'OTP is required';
+            valid = false;
+        }
 
-        <div className="hidden lg:flex lg:w-1/2  items-center justify-center p-12 relative">
-          <Image src="/log.webp" fill alt="img" className="object-contain mt-auto mx-auto" />
-        </div>
+        setErrors(newErrors);
+        return valid;
+    };
 
+    const handleLogin = async () => {
+        if (!validate()) return;
+        let data = { identifier };
 
-        <div className="w-full lg:w-1/2 flex items-center justify-center md:p-8 mb-12">
-          <div className="w-full max-w-md ">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold mb-3">Welcome Back</h1>
-              <p className="text-sm">Please login to your account to discover latest career opportunity.</p>
-            </div>
+        if (isEmail) {
+            data.password = password;
+        } else {
+            data.otp = otp;
+        }
 
-            <div className="bg-white rounded-xl shadow p-6">
-              <div className="flex gap-2 mb-4 bg-prime/10 p-1 rounded-full text-center">
-                <button
-                  onClick={() => setActiveTab('email')}
-                  className={`py-1 px-3 font-medium text-sm flex-1 ${activeTab === 'email'
-                    ? 'bg-white rounded-full shadow'
-                    : ''
-                    }`}
-                >
-                  Email Id
-                </button>
-                <button
-                  onClick={() => setActiveTab('mobile')}
-                  className={`py-1 px-3 font-medium text-sm flex-1 ${activeTab === 'mobile'
-                    ? 'bg-white rounded-full shadow'
-                    : ''
-                    }`}
-                >
-                  Mobile
-                </button>
-              </div>
+        const result = await loginApi(data);
 
-              <div className="space-y-4">
-                {activeTab === 'email' ? (
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">
-                      Email Id
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={email}
-                      onChange={handleEmailChange}
-                      placeholder="jhondoe@gmail.com"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-prime focus:border-prime outline-none"
-                    />
-                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-                  </div>
-                ) : (
-                  <div>
-                    <label htmlFor="mobile" className="block text-sm font-medium mb-2">
-                      Mobile Number
-                    </label>
-                    <input
-                      type="tel"
-                      id="mobile"
-                      value={mobile}
-                      onChange={handleMobileChange}
-                      placeholder="+91 98765 43210"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-prime focus:border-prime outline-none"
-                    />
-                    {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
-                  </div>
-                )}
+        if (result.success) {
+            toast.success('Login successful!');
+            if (result.data.token) {
+                localStorage.setItem('token', result.data.token);
+            }
+            setTimeout(() => {
+                router.push('/register');
+            }, 1000);
+        } else {
+            toast.error(result.message || 'Login failed');
+        }
+    };
 
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium mb-2">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      id="password"
-                      value={password}
-                      onChange={handlePasswordChange}
-                      placeholder="••••••••••••••••"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-prime focus:border-prime outline-none pr-12"
-                    />
-                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
-                    <button
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2"
-                    >
-                      {!showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
+    const handleIdentifierChange = (e) => {
+        setIdentifier(e.target.value);
+        if (errors.identifier) setErrors({ ...errors, identifier: '' });
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+        if (errors.password) setErrors({ ...errors, password: '' });
+    };
+
+    const handleOtpChange = (e) => {
+        setOtp(e.target.value);
+        if (errors.otp) setErrors({ ...errors, otp: '' });
+    };
+
+    return (
+        <section className="bg-[url('/bg.webp')] bg-cover bg-center pt-8 flex min-h-[calc(100vh-145px)]">
+            <div className="flex container relative z-10">
+                <div className="hidden lg:block lg:w-1/2 relative ">
+                    <Image src="/log.webp" fill alt="img" className="object-contain -ms-18" />
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center font-semibold cursor-pointer">
-                    <input type="checkbox" className="mr-2" />
-                    <span className="text-sm">Remember Me</span>
-                  </label>
-                  <Link href="#" className="text-sm hover:text-prime underline">
-                    Forgot Password?
-                  </Link>
+                <div className="w-full lg:w-1/2 flex items-center justify-center md:p-8">
+                    <div className="w-full max-w-md ">
+                        <div className="mb-8">
+                            <h1 className="text-3xl font-bold mb-3">Welcome Back</h1>
+                            <p className="text-sm">Please login to your account to discover latest career opportunity.</p>
+                        </div>
+
+                        <div className="bg-white rounded-xl shadow p-6">
+                            <div className="flex gap-2 mb-4 bg-prime/10 p-1 rounded-full text-center">
+                                <button
+                                    onClick={() => setActiveTab('employee')}
+                                    className={`py-1 px-3 font-medium text-sm flex-1 ${activeTab === 'employee'
+                                        ? 'bg-white rounded-full shadow'
+                                        : ''
+                                        }`}
+                                >
+                                    Employee
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('employer')}
+                                    className={`py-1 px-3 font-medium text-sm flex-1 ${activeTab === 'employer'
+                                        ? 'bg-white rounded-full shadow'
+                                        : ''
+                                        }`}
+                                >
+                                    Employer
+                                </button>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label htmlFor="identifier" className="block text-sm font-medium mb-2">
+                                        Email ID / Mobile Number
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            id="identifier"
+                                            value={identifier}
+                                            onChange={handleIdentifierChange}
+                                            placeholder="jhondoe@gmail.com or +91 98765 43210"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-prime focus:border-prime outline-none"
+                                        />
+                                        {isMobile && (
+                                            <button className="absolute right-4 top-1/2 -translate-y-1/2 text-prime text-sm font-medium">
+                                                Send OTP
+                                            </button>
+                                        )}
+                                    </div>
+                                    {errors.identifier && <p className="text-red-500 text-xs mt-1">{errors.identifier}</p>}
+                                </div>
+
+                                {isEmail && (
+                                    <div>
+                                        <label htmlFor="password" className="block text-sm font-medium mb-2">
+                                            Password
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type={showPassword ? 'text' : 'password'}
+                                                id="password"
+                                                value={password}
+                                                onChange={handlePasswordChange}
+                                                placeholder="••••••••••••••••"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-prime focus:border-prime outline-none pr-12"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute right-4 top-1/2 -translate-y-1/2"
+                                            >
+                                                {!showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                            </button>
+                                        </div>
+                                        {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                                    </div>
+                                )}
+
+                                {isMobile && (
+                                    <div>
+                                        <label htmlFor="otp" className="block text-sm font-medium mb-2">
+                                            Enter OTP
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="otp"
+                                            value={otp}
+                                            onChange={handleOtpChange}
+                                            placeholder="Enter 6-digit OTP"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-prime focus:border-prime outline-none"
+                                            maxLength="6"
+                                        />
+                                        {errors.otp && <p className="text-red-500 text-xs mt-1">{errors.otp}</p>}
+                                    </div>
+                                )}
+
+                                <div className="flex items-center justify-between">
+                                    <label className="flex items-center font-semibold cursor-pointer">
+                                        <input type="checkbox" className="mr-2" />
+                                        <span className="text-sm">Remember Me</span>
+                                    </label>
+                                    <PreloaderLink href="#" className="text-sm hover:text-prime underline">
+                                        Forgot Password?
+                                    </PreloaderLink>
+                                </div>
+
+                                <button
+                                    onClick={handleLogin}
+                                    className="w-full bg-prime text-white py-3 rounded-full font-medium hover:opacity-90"
+                                >
+                                    Login
+                                </button>
+
+                                <p className="text-center text-sm">
+                                    Don't have an account?{' '}
+                                    <PreloaderLink href="/register" className="text-prime font-medium">
+                                        Register Now
+                                    </PreloaderLink>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <button
-                  onClick={handleLogin}
-                  className="w-full bg-prime text-white py-3 rounded-full font-medium hover:opacity-90"
-                >
-                  Login
-                </button>
-
-                <p className="text-center text-sm">
-                  Don't have an account?{' '}
-                  <Link href="/" className="text-prime font-medium">
-                    Register Now
-                  </Link>
-                </p>
-              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+        </section>
+    );
 }
