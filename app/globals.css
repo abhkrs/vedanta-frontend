@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:root {
+  --prime: #0764A7;
+  --sec: #6AB144;
+  --default-color: #494a4b;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-prime: var(--prime);
+  --color-sec: var(--sec);
+  --color-default: var(--default-color);
+}
+
+body {
+  background: var(--background);
+  color: var(--default-color);
+}
+
+h1, h2, h3, h4, h5, h6, label {
+  color: #000000;
+}
+
+.container{
+  margin-inline:auto;
+  width: 90vw;
+  max-width: 1600px !important;
+}
+
+button, a{
+  cursor: pointer;
+}
+
+input:read-only{
+  background: #0001;
+}
+
+.react-datepicker__month .react-datepicker__month-text{
+  height: 28px;
+  padding: 8px;
+}
+.react-datepicker:has(.react-datepicker__header__dropdown) .react-datepicker__navigation,
+.react-datepicker__header:has(.react-datepicker__header__dropdown) .react-datepicker__current-month{
+display: none !important;
+}
