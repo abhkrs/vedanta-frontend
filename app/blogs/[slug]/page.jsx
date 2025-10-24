@@ -149,7 +149,7 @@ Another critical area of regulatory reform involves ethical oversight and patien
           <div>
             <Heading
               black="Related"
-              green="Industry News"
+              blue="Industry News"
             />
             <P>Stay informed with the most recent updates, trends, and insights shaping the global pharma and biotech landscape.</P>
           </div>

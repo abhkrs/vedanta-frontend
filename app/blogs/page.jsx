@@ -128,7 +128,7 @@ export default function page() {
     return (
         <>
             <Section className="py-8 lg:py-10 xl:py-12">
-                <Heading black="Latest" green="Industry News" />
+                <Heading black="Latest" blue="Industry News" />
                 <P delay={.1} className="my-3">Stay informed with the most recent updates, trends, and insights shaping the global pharma and biotech landscape.</P>
                 <div className="flex items-center justify-between mt-6">
                     <div className="flex flex-wrap gap-2">

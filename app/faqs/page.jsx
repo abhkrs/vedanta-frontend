@@ -1,61 +1,8 @@
 'use client'
-import Heading from "@/components/typography/Heading";
 import Section from "@/components/uielements/Section";
-import { useState, memo, useCallback } from 'react';
-import { ArrowDown, ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAnimation } from '@/components/AnimationContext';
-import { AnimatedText, H1, H2, P } from "@/components/typography";
-
-const AccordionItem = memo(({ item, originalIndex, isOpen, onToggle, delay }) => {
-    const { isPageTransitionComplete } = useAnimation();
-    return (
-        <motion.div
-            className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isPageTransitionComplete ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ delay: isPageTransitionComplete ? delay : 0, duration: 0.6 }}
-        >
-            <motion.button
-                onClick={() => onToggle(originalIndex)}
-                className="w-full flex items-center justify-between p-4 text-left"
-            >
-                <span className="text-sm md:text-base font-medium text-gray-900 pr-4">
-                    {item.question}
-                </span>
-                <motion.div
-                    className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-prime text-white"
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                >
-                    <ChevronDown size={18} />
-
-                </motion.div>
-            </motion.button>
-
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                    >
-                        <motion.div
-                            className="px-4 pb-4 text-sm"
-                            initial={{ y: -10 }}
-                            animate={{ y: 0 }}
-                            transition={{ delay: 0.1 }}
-                        >
-                            {item.answer}
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </motion.div>
-    );
-});
+import { useState, useCallback } from 'react';
+import { H1, P } from "@/components/typography";
+import Accordion from "@/components/Accordion";
 
 export default function page() {
     const [activeTab, setActiveTab] = useState('employee');
@@ -108,20 +55,32 @@ export default function page() {
         ],
         courseLearners: [
             {
-                question: "How do I enroll in a course?",
-                answer: "Browse our course catalog, select the course you're interested in, review the curriculum and requirements, and click 'Enroll Now'. Complete the payment process if it's a paid course, or simply register for free courses."
+                question: "Are the courses free?",
+                answer: "Yes, all courses offered through the Vedanta Foundation's Learning Management System (LMS) are completely free of cost. These courses are designed to make skill-building accessible to everyone — especially individuals who may not have had the opportunity for formal education or job training. Whether you are just starting your career, looking to switch fields, or returning to work after a gap, you can access our courses without any fees. The goal is to remove financial barriers and provide equal opportunities for learning and employment. All you need is the willingness to learn and a device with internet access."
             },
             {
-                question: "Are the courses certified?",
-                answer: "Yes, most of our courses offer certificates upon successful completion. These certificates are industry-recognized and can be added to your professional profile to enhance your career prospects."
+                question: "In what languages are the courses available?",
+                answer: "Our courses are available in multiple languages to ensure accessibility for learners from diverse backgrounds. Currently, we offer courses in English, Hindi, and several regional languages. We are continuously working to expand our language offerings to reach more learners across different regions."
             },
             {
-                question: "Can I access courses on mobile devices?",
-                answer: "Absolutely! Our platform is mobile-friendly, allowing you to access course content, watch videos, take quizzes, and track your progress from any device, anywhere, anytime."
+                question: "Can I access the courses on my mobile phone?",
+                answer: "Absolutely! Our Learning Management System is fully mobile-responsive, allowing you to access all course materials, videos, and assessments on your smartphone or tablet. You can learn on the go, at your own pace, from anywhere with an internet connection."
             },
             {
-                question: "What if I need help during the course?",
-                answer: "We provide comprehensive support through discussion forums, direct messaging with instructors, live Q&A sessions, and dedicated customer support. You're never alone in your learning journey."
+                question: "How long do the courses take to complete?",
+                answer: "Course duration varies depending on the subject and skill level. Most courses range from 2 to 8 weeks, with flexible learning schedules. You can learn at your own pace and complete the course according to your availability. Each course clearly mentions the estimated time commitment required."
+            },
+            {
+                question: "Do I need any prior experience to start a course?",
+                answer: "No prior experience is required for most of our beginner-level courses. We offer courses for all skill levels — from complete beginners to advanced learners. Each course description clearly mentions the prerequisites, if any, so you can choose the right course based on your current knowledge and experience."
+            },
+            {
+                question: "Are the courses linked to real job opportunities?",
+                answer: "Yes! Upon successful completion of our courses, you gain access to our job portal where employers actively seek candidates with the skills you've learned. We partner with various companies and organizations to connect trained individuals with relevant job opportunities, helping you transition from learning to earning."
+            },
+            {
+                question: "Will I get a certificate after completing a course?",
+                answer: "Yes, you will receive a certificate of completion after successfully finishing a course and passing the assessments. This certificate can be downloaded and shared with potential employers, added to your resume, or showcased on professional networking platforms to demonstrate your newly acquired skills."
             }
         ]
     };
@@ -131,9 +90,6 @@ export default function page() {
     const toggleAccordion = useCallback((index) => {
         setOpenIndex(prev => prev === index ? null : index);
     }, []);
-
-    const leftColumn = accordionData.filter((_, index) => index % 2 === 0);
-    const rightColumn = accordionData.filter((_, index) => index % 2 === 1);
 
     return (
         <>
@@ -180,39 +136,12 @@ export default function page() {
            
                 </div>
 
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-12">
-                    <div className="space-y-6">
-                        {leftColumn.map((item, index) => {
-                            const originalIndex = accordionData.indexOf(item);
-                            return (
-                                <AccordionItem
-                                    key={originalIndex}
-                                    item={item}
-                                    originalIndex={originalIndex}
-                                    isOpen={openIndex === originalIndex}
-                                    onToggle={toggleAccordion}
-                                    delay={index * 0.1}
-                                />
-                            );
-                        })}
-                    </div>
-
-                    <div className="space-y-6">
-                        {rightColumn.map((item, index) => {
-                            const originalIndex = accordionData.indexOf(item);
-                            return (
-                                <AccordionItem
-                                    key={originalIndex}
-                                    item={item}
-                                    originalIndex={originalIndex}
-                                    isOpen={openIndex === originalIndex}
-                                    onToggle={toggleAccordion}
-                                    delay={(index + leftColumn.length) * 0.1}
-                                />
-                            );
-                        })}
-                    </div>
+                <div className="mt-12">
+                    <Accordion 
+                        data={accordionData} 
+                        openIndex={openIndex} 
+                        onToggle={toggleAccordion} 
+                    />
                 </div>
             </Section>
         </>

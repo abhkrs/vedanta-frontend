@@ -24,7 +24,7 @@ export default function page() {
             <Section className="py-8 md:py-10 lg:py-12" sclass="bg-gradient-to-t from-white via-prime/05 to-prime/10">
                 <Heading
                     black="Companies"
-                    green="That Are Hiring"
+                    blue="That Are Hiring"
                     className="text-center"
                 />
                 <P className="text-center mx-auto max-w-xl my-4 text-black/90">Discover opportunities with top employers who are actively building their teams and shaping the future.</P>
