@@ -5,6 +5,7 @@ import Section from "@/components/uielements/Section";
 import { MapPin, Clock, DollarSign, Search, Heart, Bell, Settings2 } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function page() {
     const [selectedFilters, setSelectedFilters] = useState({
@@ -364,15 +365,15 @@ export default function page() {
 
                                     {/* Job Details */}
                                     <div className="flex flex-wrap gap-2 mb-4">
-                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs">
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-sec/10 text-sec rounded-full text-xs">
                                             <MapPin size={14} />
                                             {job.location}
                                         </span>
-                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs">
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-sec/10 text-sec rounded-full text-xs">
                                             <Clock size={14} />
                                             {job.type}
                                         </span>
-                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs">
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-sec/10 text-sec rounded-full text-xs">
                                             <DollarSign size={14} />
                                             {job.salary}
                                         </span>
@@ -396,54 +397,17 @@ export default function page() {
                                 </div>
                             ))}
 
-                            {/* Register Now Section - Spans 2 columns */}
-                            <div className="md:col-span-2 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-                                <div className="flex-1">
-                                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Register now to</h2>
-                                    <div className="space-y-3">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-6 h-6 bg-prime rounded-full flex items-center justify-center flex-shrink-0">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                </svg>
-                                            </div>
-                                            <span className="text-gray-700">Find all work from home jobs</span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-6 h-6 bg-prime rounded-full flex items-center justify-center flex-shrink-0">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                </svg>
-                                            </div>
-                                            <span className="text-gray-700">Get contacted by top recruiters</span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-6 h-6 bg-prime rounded-full flex items-center justify-center flex-shrink-0">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                </svg>
-                                            </div>
-                                            <span className="text-gray-700">Get access to courses for top skills</span>
-                                        </div>
-                                    </div>
-                                    <button className="mt-6 bg-prime text-white px-8 py-3 rounded-full hover:bg-prime/90 transition-colors font-medium flex items-center gap-2">
-                                        Know More
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div className="flex-shrink-0">
+                     
+                                <Link href="/register" className="col-span-2 max-w-full ">
                                     <Image
-                                        src="/log.png"
+                                        src="/register-now.jpg"
                                         alt="Register"
-                                        width={300}
-                                        height={200}
-                                        className="object-contain"
+                                        width={1112}
+                                        height={260}
+                                        className="w-full rounded-2xl border-white border-4 shadow-md"
                                     />
-                                </div>
-                            </div>
-
+                                </Link>
+                     
                             {/* Remaining Job Listings */}
                             {jobListings.slice(6).map((job) => (
                                 <div key={job.id} className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
@@ -466,15 +430,15 @@ export default function page() {
 
                                     {/* Job Details */}
                                     <div className="flex flex-wrap gap-2 mb-4">
-                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs">
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-sec/10 text-sec rounded-full text-xs">
                                             <MapPin size={14} />
                                             {job.location}
                                         </span>
-                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs">
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-sec/10 text-sec rounded-full text-xs">
                                             <Clock size={14} />
                                             {job.type}
                                         </span>
-                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs">
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-sec/10 text-sec rounded-full text-xs">
                                             <DollarSign size={14} />
                                             {job.salary}
                                         </span>
